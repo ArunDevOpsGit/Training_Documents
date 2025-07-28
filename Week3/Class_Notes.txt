@@ -1,0 +1,427 @@
+
+#######################
+Day 11: 28th July 2025
+#######################				
+			
+	
+	- Az Pipeline Services :::	
+
+		- Build Pipeline 					# - Continuous Integration
+		
+		- Release Pipeline 					# - Continuous Delivery/Deployment 
+		
+		
+	- AzPipelines are written using *.yaml scripts!
+		- key:value pair.
+		
+		
+		Application Build :::
+		
+			- Compile the source code and create artifacts 			
+		
+		
+		Non-Prod 
+		
+			Dev Environment
+			
+			Build Environment :
+			
+				- Create Artifacts  *.war / *.exec / *.dll
+			
+			Target Environments :	(Deployment Group)
+			
+				- Test 
+				
+					QA 
+			
+					UAT 
+		
+				Prod Environments 	(Deployment Group)
+		
+					- Prod_Server1,2,3,4,5 
+
+			
+	Azure Pipelines :
+	
+	
+		Agents :
+
+			- Node/VM 
+			
+			Self-Hosted Agents 
+			
+			
+		Azure Pipeline :
+		
+			- Azure Build Pipeline 
+			
+				- Perform Application Build in the Non-Prod Environments
+			
+			- Azure Release Pipeline 
+			
+				- Promote the Changes from Non-Prod to Prod Environment
+		
+			- Build Environments :
+			
+				- Managed Agents 
+				
+				- Self-Hosted Agents 
+
+
+
+	CI/CD ==> 
+	
+		Scenario 1 :
+		
+			End-to-End Pipeline ==> Build, Create Artifacts, Test and Deploy
+			
+		Scenario 2 :
+			
+			Build Pipeline ==> Build and Create Artifacts, Test  ==> *.war / *.dll / *.exec
+								
+								Containerization!
+
+			Release Pipeline ==> Promote the Changes from Non-Prod to Prod Environment
+			
+			
+		CICD Pipeline --> Composed of various Stages(Collection Tasks)				
+				
+			Build Environment (VM)	-- Install the Build Tools		
+				
+				- Self Hosted 
+					- Manually Create, Install the required Build Tools and maintain the Agent 
+					- This can be reusable 
+					
+					Agent Pool:
+						- Self Hosted Agent1 - Java Application Build --> Jdk,maven 
+						- Self Hosted Agent2 - Java Application Build --> Jdk,maven 
+						- Self Hosted Agent3 - Java Application Build --> Jdk,maven 
+					
+				- Azure Managed Agent 
+				
+					Agent Pool:
+						- Managed Hosted Agent1 - Java Application Build --> Jdk,maven 
+						- Managed Hosted Agent2 - Java Application Build --> Jdk,maven 
+						- Managed Hosted Agent3 - Java Application Build --> Jdk,maven 	
+		
+			Service Connections - Used to Access the external services 	
+			
+			
+	- Non-Containerized Application 
+	
+		1. Developer Created the Source Code 
+		2. Commit the Changes to Source Code Repository (github/AzRepos)
+		
+	Using DevOps CICD Pipeline :
+	
+		1. SCM_Checkout --> Download the SourceCode from Source Code Repository to Build Environment
+		2. Application Build (Compile the source code and create artifacts -  mywebapp.war)
+		3. Unit Test 
+		4. Promote the Application Artifacts to QA Environment
+		5. Automated QA Testing (Testing Team) - Reg/Func/Perf/Integration
+		6. Promote the Application Artifacts to UAT Environment
+		7. Automated/Manual UAT Testing (Done by the Business Users)
+	
+		8. Promote the Application Artifacts to Prod Environment
+
+
+	- Containerized Applications : Docker & Kubernetes
+	
+		1. Developer Created the Source Code 
+		2. Commit the Changes to Source Code Repository (github/AzRepos)
+		
+	Using DevOps CICD Pipeline :
+	
+		1. SCM_Checkout --> Download the SourceCode from Source Code Repository to Build Environment
+		2. Application Build (Compile the source code and create artifacts -  mywebapp.war)
+		2.1 Applications Container Image Build using ACS - mywebapp_image:v1.1
+		2.2 Publish the Container Image to Container Registry using ACR
+		3. Unit Test 
+		4. Deploy the Application Container Images to QA Environment
+		5. Automated QA Testing (Testing Team)
+		6. Deploy the Application Container Images to UAT Environment
+		7. Automated/Manual UAT Testing (Done by the Business Users)
+	
+		8. Deploy the Application Container Images to Prod Environment	
+		
+		
+		
+	Container ?
+	
+		Containerization :::
+		
+			-> It is a process of packaging the application along with its dependencies
+			
+			
+	Developers' / Deployment Perspective :::
+	
+		Role :
+		
+			Dev Environment :
+			
+				- Create Source Code 
+				
+				- Build 				--> mywebapp.war 
+				
+				Using Containerization :
+				
+				Package the application : (mywebapp.war,jdk_v11,Tomcat_v8)	==> mywebapp_img:v1.0
+				
+				
+				Publish the Container Image to Container Registry(DockerHub/ACR)
+				
+			QA-Test Server :
+			
+			
+				pull Container Image from Container Registry(DockerHub/ACR)
+				
+				Create Application Container 
+	
+
+			UAT-Test Server :
+			
+			
+				pull Container Image from Container Registry(DockerHub/ACR)
+				
+				Create Application Container 
+
+
+			Prod-Test Server :
+			
+			
+				pull Container Image from Container Registry(DockerHub/ACR)
+				
+				Create Application Container 				
+	
+			
+			
+		Container Image :
+		
+			- It is static file that composed of various layers 
+			- Non-Executable 
+			- Dockerfile - composed of various Instructions to build an Image.
+			
+		Container :
+		
+			- Executable entity of Container Images 
+			
+			
+		Terminologies :
+		
+			- Container Engine 			# To Create/Manage the Containers
+			
+			- Container Image 	
+							- It is static file that composed of various layers 
+							- Non-Executable 
+							- Dockerfile - composed of various Instructions to build an Image.
+							
+			- Container
+							- Executable entity of Container Images 
+
+							
+			- Container Registry 
+							- Version Control / Maintain the Container Images 
+							- (DockerHub/ACR)
+							
+			
+			- Container Repository
+			
+							- Subset of Container Registry
+							
+							
+							
+			
+			Version Control Source Code					==> 	Artifactory Libraries 			==> 	Container Registries
+			
+				- GitHub/AzRepos								- Jfrog/AzArtifact						- DockerHub/AzContainer Registry
+				
+					mywebapp.jsp_v1.1					==>		    mywebapp.war_v1.1			==> 	   mywebapp-Img_v1.1	
+					mywebapp.jsp_v1.2					==>		    mywebapp.war_v1.2			==> 	   mywebapp-Img_v1.2				
+					mywebapp.jsp_v1.3					==>		    mywebapp.war_v1.3			==> 	   mywebapp-Img_v1.3				
+			
+
+	
+	
+	Configure Build Environment (VM)	-- Install the Build Tools		
+		
+		- Launch a AzVM
+		
+		- Login to AzVM 
+				- Access/Connect to AzVM using MobaXterm/Putty(SSH Agent) 
+				
+					Parameters to access remote server using SSH:
+					
+						- Target Host Name				# Public IP : 20.244.24.106
+						- User Name						# azureuser 
+						- User Credentials		
+							- Key Based Authencation 	# *.pem
+		
+		
+		- Install required build tools :::
+		
+				
+				- Manage Linux Packages/Users/Remote Servers/Files 
+			
+			Java Maven/gradle Web Applications :
+			
+				- git 
+				
+				- jdk 
+				
+				- maven 
+				
+				- docker 
+
+
+Login to Linux Server :
+
+- Elevate the access to root user.
+
+- As a linux root, manage the packages!
+
+- Linux Package Manager to install/uninstall/upgrade the Linux packages!
+
+- The package managers are based on the Linux Distributions 
+
+- The package managers are executed only as a root user by default
+
+
+	Distributions 						Package Manager 
+	
+		- Debian/Ubuntu 					==> apt/apt-get 
+	
+		- centos/RHEL						==> yum 
+	
+		- Fedora							==> dnf
+
+
+sudo -i
+
+apt update -y 
+
+#Install Java ::
+
+sudo apt update -y 
+sudo apt install openjdk-17-jre -y
+java -version						
+
+#Install GIT :
+
+sudo apt install git -y			
+git --version 
+
+#Install Maven - Build Tool :
+#https://maven.apache.org/install.html
+
+sudo apt install maven -y 
+
+mvn --version
+
+#Add User : 
+
+useradd devopsadmin -s /bin/bash -m -d /home/devopsadmin
+
+su - devopsadmin
+
+#ssh-keygen
+
+#for Ubuntu ::
+#ssh-keygen -t rsa -b 2048 -m PEM								#ubuntu 20.04
+
+ssh-keygen -t ecdsa -b 521										#ubuntu 22.04 or higher version of ubuntu				
+
+
+ls ~/.ssh 
+
+#You should see following two files:
+
+#id_ecdsa - private key
+#id_ecdsa.pub - public
+
+
+#cat id_rsa.pub > authorized_keys
+
+cat id_ecdsa.pub > authorized_keys
+
+chmod 600 /home/devopsadmin/.ssh/*
+
+
+Maven --> Java Application Build Tool :
+
+- Perform Java maven Application Build (Compile,Test,Create Artifacts)
+
+- Pre-requisites :
+
+	- POM.XML File 				#	Should be maintained in the Source Code Repository by the Developers!
+								# 	It is used to define the properties of maven application build 
+								#	It is used to define all the dependencies and plugins required to build the maven applications.
+								
+								
+	- Maven Goals :
+	
+		- Compile 				# 	mvn compile - Compile the Source Code and produce the compilation results
+		- Test 					# 	mvn test 	- To Perform: Compile and Unit Test. 
+		- Create Artifacts 		# 	mvn package - To Perform: Compile, Unit Test and Package(Create Artifacts)
+		
+		
+		- The Packages by default gets created in the target/ folder of the project workspace!
+		
+					target/*.war			# out come of application build!
+								
+https://github.com/SK-AZ-400-1407/java-webapp-project.git
+
+
+To Deploy any Micro-Service Based Application Services 
+
+	- Docker 
+	
+	- Kubernetes 
+	
+	Working Docker :::
+	
+		- Access to Contiainer Registry 
+		
+		- Using Docker Cli Commands 
+		
+			- To Access Container Images from Container Registries(DockerHub/AzCR)
+			
+			- To Create Container Images based on the Application Artifacts and dependencies
+			
+			- To Execute/Run the Containers based on the Container Images 
+			
+			- To Publish the Container Images to Container Registries(DockerHub/AzCR)
+			
+		
+			- Login to the running Containers 
+			
+			- Capture the Container Execution Logs
+			
+			- Share the Container Logs with the Application teams 
+
+
+	Install Docker Engine in the Build Server:
+		
+		- sudo -i 
+		
+		- apt install docker.io -y
+		
+	
+	Docker Cli Commands :
+	
+		
+		- docker images 				# To get the list of docker images in the local machine 
+
+		- docker ps 					# To get the list of all active docker containers 
+		
+		- docker ps -a 					# To get the list of all active/inactive docker containers 
+		
+		
+
+Next :
+
+	- Work with Docker Cli Commands 
+	
+	- Create an Docker Application Image using Dockerfile!'
+	
+	- Container Registries!	
+		
