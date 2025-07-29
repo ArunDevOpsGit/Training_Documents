@@ -420,6 +420,110 @@ To Deploy any Micro-Service Based Application Services
 Next :
 
 	- Work with Docker Cli Commands 
+
+
+
+	
+#######################
+Day 12: 29th July 2025
+#######################		
+
+	
+	- Work with Docker Cli Commands ::
+	
+	- Working with Container Registries :
+	
+		- DockerHub 
+		
+		- Azure Container Registry
+
+
+	usermod -aG docker devopsadmin
+	
+	
+	Docker Cli Commands :
+	
+		- docker images 					# To get the list of docker images in the local machine 
+
+		- docker ps 						# To get the list of all active docker containers 
+		
+		- docker ps -a 						# To get the list of all active/inactive docker containers 
+		
+		- docker pull <Container_Image>		# Download latest version an Image from Container Registry 
+
+		- docker pull alpine:3.22.1			# Download specific version of an Image from Container Registry 
+		
+		- docker run <Container_Image>		# To Create and run the Container based on the Container Image
+		
+		
+		- Three Modes of Container Execution :
+		
+			- Foreground/Attached Mode 	:											# Default
+			
+				- It executed in active Terminal 
+				
+				Eg.: 
+				
+					docker run ubuntu sleep 20 				
+			
+			- Background/Detached Mode :
+			
+				Eg.: 
+				
+					docker run -d ubuntu sleep 20 					
+			
+			- Interactive Mode :
+			
+				Eg.: 
+		
+					- docker run -it ubuntu bash
+					
+					- exit 						# Exit Container running in interactive mode 
+		
+		
+			- Start a Container :
+			
+					- docker start <container_id>
+		
+			- Login to running Contianer ::
+			
+					- docker exec -it <Container_ID> bash
+				
+					- docker exec -it ffdcc671fb70 bash
+					
+					- exit 						# Logoff
+					
+			- Stop a Container :
+			
+					- docker stop <container_id>	
+					
+			- kill Container 
+			
+					- docker kill <container_id>
+					
+					
+			- Delete Container / Image ::
+			
+			
+				docker rmi <image_id> 				# Remove/Delete Container Image from Local Machine
+				
+				docker rm <container_id>			# Remove/Delete Container from Local Machine
+
+
+		Port Mapping!
+		
+			==> Is used to map the Container Port with the Host Port 
+			
+					-p host_port:container_port
+			
+					docker run -it -p 8085:8080 tomcat:8.0				
+					
+					docker run -it -p 8086:80 nginx:latest
+							
+			
+			
+					
+				
 	
 	- Create an Docker Application Image using Dockerfile!'
 	
