@@ -529,3 +529,281 @@ Day 12: 29th July 2025
 	
 	- Container Registries!	
 		
+
+
+	
+#######################
+Day 13: 30th July 2025
+#######################	
+
+		Version Control Source Code					==> 	Artifactory Libraries 			==> 	Container Registries
+		
+			- GitHub/AzRepos								- Jfrog/AzArtifact						- DockerHub/AzContainer Registry
+			
+				mywebapp.jsp_v1.1					==>		    mywebapp.war_v1.1			==> 	   mywebapp-Img_v1.1	
+				mywebapp.jsp_v1.2					==>		    mywebapp.war_v1.2			==> 	   mywebapp-Img_v1.2				
+				mywebapp.jsp_v1.3					==>		    mywebapp.war_v1.3			==> 	   mywebapp-Img_v1.3				
+		
+		
+	
+	Virtual Machines :
+		
+		- VMs are called as Hardware Level Virtualization
+		- VMs are created using Hypervisor 
+		- VMs are used to execute the Operating System and its applications
+		- VMs will be up and running, even if there is no active task/application
+		- VMs consume more time and space to start the application service
+		
+	
+	Containers :
+	
+		- Containers are called as OS Level Virtualization
+		- Containers are created using Container Engine
+		- Containers are used to execute the Applications/Tasks
+		- Containers will immediately go to exit/stop state if there is no active task/application
+		- Containers consume les time and space to start the application service
+
+			- Containers uses underlying properties of Operating System :
+			
+				- Namespace 
+				- Control Groups 
+				
+		- Using Containers we can reduce the no. of VMs. But we not completely eliminate VMs.
+				
+		Terminologies :
+		
+			- Container Engine 			# To Create/Manage the Containers
+			
+			- Container Image 	
+							- It is static file that composed of various layers 
+							- Non-Executable 
+							- Dockerfile - composed of various Instructions to build an Image.
+							
+			- Container
+							- Executable entity of Container Images 
+
+							
+			- Container Registry 
+							- Version Control / Maintain the Container Images 
+							- (DockerHub/ACR)
+							
+			
+			- Container Repository
+			
+							- Subset of Container Registry
+		
+	
+
+
+	- Create Container Images!
+	
+		- Infra-Structure Perspective :
+			
+			- docker commit :::			# Used to Create Server templates!
+			
+				- Is used to create a container image based on existing container reference.
+				
+				Syntax:
+				
+					docker commit <Container_id> <Container_Repo_Name>/Image_name:<tag>
+				
+				Eg.: 
+					docker commit 6e05485c5a2b loksaieta/sk-azimg:v1.0
+
+
+
+		- Developers/Deployment :
+
+			- docker build :
+			
+				- Is used to create a container image based on Dockerfile reference.
+				- Dockerfile will be created by the Developers and maintained in the Source Code Repositories
+				- Dockerfile composed of various instruction to create the layers of Container Image 
+
+				Syntax: 
+				
+					docker build -t <Container_Repo_Name>/Image_name:<tag> .		# '.' Denotes the Dockerfile reference
+					
+				Eg.: 
+					docker build -t loksaieta/sk-azimg:v1.1 .
+
+					- Prepare Dockerfile before executing the docker build command 
+					
+					
+					
+					vi Dockerfile 
+					
+					FROM ubuntu
+					RUN apt update -y 
+					RUN apt install git -y 
+					RUN apt install maven -y 
+		
+		
+					docker build -t loksaieta/sk-javawebappimg .
+						
+					Run the Container using port mapping :
+					
+						docker run -it -p 8085:8080 loksaieta/sk-javawebappimg
+
+					
+					
+					
+					
+					
+		- Containerization : 
+		
+			- Is a process of packaging the applications along with its dependencies.
+			
+			
+			Dev Environment :
+			
+				- Create Source Code 
+				- Create Application Artifacts 		mywebapp.war
+			
+			
+	Developers' / Deployment Perspective :::
+	
+		Role :
+		
+			Dev Environment :
+			
+				- Create Source Code 
+				
+				- Build 				--> mywebapp.war 
+				
+				Using Containerization :
+				
+				Package the application : (mywebapp.war,jdk_v11,Tomcat_v8)	==> mywebapp_img:v1.0
+				
+				
+				Publish the Container Image to Container Registry(DockerHub/ACR)
+				
+			QA-Test Server :
+			
+			
+				pull Container Image from Container Registry(DockerHub/ACR)
+				
+				Create Application Container 
+	
+
+			UAT-Test Server :
+			
+			
+				pull Container Image from Container Registry(DockerHub/ACR)
+				
+				Create Application Container 
+
+
+			Prod-Test Server :
+			
+			
+				pull Container Image from Container Registry(DockerHub/ACR)
+				
+				Create Application Container 				
+	
+		vi Dockerfile
+
+		Write Dockerfile :::
+		
+			Docker File Instructions :::
+			
+			FROM 									# To Identify the Base Image
+			RUN 									# To run the package manager
+			COPY 									# To Copy the file from host volume to container volume
+			CP 										# To Copy the file within the container volumes 
+			ADD 									# To Copy the file from Host Volume as well as from URL
+			ENV 									# To define the Environment Variable 
+			ARG 									# To pass Arguements to the Steps in Dockerfile 
+			EXPOSE									# To Define the Container Port 
+			WORKDIR									# To set the current working directory within the Container 
+			CMD										# To set the default start-up command to the container 
+													  This Command can be changed at run-time.
+			ENTRYPOINT								# To set the default start-up command to the container 
+													  This Command cannot be changed at run-time.			
+								
+			
+			
+		Container Registries :
+		
+			- dockerhub 
+			- ACR 
+			- ECR 
+			- GCR
+			
+	- Az Container Registries :
+	
+		- Create Az Container Registry 
+		
+		
+		
+	
+	- Az Pipeline :::
+	
+		-> It is used to automate Application Builds and Deployments
+		-> Az Pipelines can be created using classic manual process / thru scripts(*.yaml)
+
+		--> 
+		
+			Build Pipeline Creates artifacts 
+			
+				0utput:  *.war 
+
+
+	- Objectives of Pipeline Project :
+	
+		-> Java Maven Web Application Build 
+	
+			-> SCM_Checkout
+			-> Use Maven to Build ==> pom.xml & maven goal 
+			-> Unit 
+			-> Publish the artifacts to the pipeline 
+	
+				
+		-> Java Maven Web Application Build 
+	
+			-> SCM_Checkout
+			-> Use Maven to Build ==> pom.xml & maven goal 
+			-> Unit 
+			-> Publish the artifacts to the pipeline 
+			-> Use Docker to Create Application Image 
+			-> Publish Application Image to Container Registries(ACR/DockerHub)
+				
+				
+				
+		-> Create Release Pipeline to Deploy the Changes to Target Servers 
+				
+
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'pom.xml'
+    mavenOptions: '-Xmx3072m'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.17'
+    jdkArchitectureOption: 'x64'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    goals: 'package'
+	
+- task: CopyFiles@2
+  inputs:
+    Contents: '**/*.war'
+    TargetFolder: '$(build.artifactstagingdirectory)'
+	
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'mywebapp'
+    publishLocation: 'Container'
