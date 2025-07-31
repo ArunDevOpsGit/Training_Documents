@@ -807,3 +807,233 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'mywebapp'
     publishLocation: 'Container'
+
+
+
+
+#######################
+Day 14: 31st July 2025
+#######################	
+
+	- Az Pipelines :
+	
+		- Agent Configurations!
+		
+			- Self Hosted Agents 
+			
+			- Managed Agents/Nodes 
+			
+		- Service Connections!	
+		
+			- Used to Connect any external service to Az Pipeline.
+				Eg.: ACR/DockerHub/Github/Kubernetes Cluster/AKS/SonarQube-Server
+				
+				
+	- CI 		===>		# Done usig Az Build Pipeline
+							# Build, Unit Test, Containerize
+							# Code Quality Analysis can be done using SonarQube Server
+							
+							# Promoted to High Environments / Initiate Release Pipeline!
+	
+	
+	- Cd/CD 				# Done using Az Release Pipeline
+							# Target Server :
+								- Deployment Group 
+								- Kubernetes Cluster (Micro-Service Based Application Services)
+							# Enable Approvals to Prod Deployments	
+								
+								
+		- Kubernetes ::::
+		
+			- Container Orchestration Tool!
+			- Open Source - Kubernetes Architecture!	***
+			
+			Kubernetes & Terraform!		*** 
+		
+		
+		- Agent Pool :
+		
+			- Is the collection of Az Build Agents(Server/VM)
+			
+			- Agents can be :
+			
+				- Self Hosted Agents 	- Managed by User 
+				
+				- Managed Agents/Nodes 	- Managed by Azure
+										- This will be create at run time using IAC Tools like ARM 
+										- VmImage :	<>		To Skin up the VM. 
+										- Java Build Tools to be installed ?
+											- 
+											
+		Environments :
+		
+			Non-Prod Environments 											Prod Environments 
+			
+				- Dev Environment 
+					- Unit Test ==> 10 Test Cases 
+					
+				- Build Environment
+								-> SCM_Checkout
+								-> Use Maven to Build ==> pom.xml & maven goal 
+								-> Unit Level Testing 
+								-> Promote changes to higher environment
+					
+				- Target Environments 
+					
+					QA 
+					
+					UAT 						=============>					Production Servers 
+										
+
+
+		Configuration of Self Hosted Agents ::::
+		
+			1. Prepare the Virtual Machine with all the required build tools.
+			
+			2. Create Agent Pool :
+				- go to project settings 
+				- Azure Agent Pool 
+					- add Agent 
+					
+				- Login to Az Portal & Create Azure User - PAT  
+				
+						Efgbz
+						
+						
+
+			3. On the Agent Pool Page :
+			
+				- Click on new Agent :
+				
+				azureuser~:
+				
+				mkdir myagent
+				
+				cd myagent
+				
+				wget https://download.agent.dev.azure.com/agent/4.259.0/vsts-agent-linux-x64-4.259.0.tar.gz
+				
+				tar zxvf vsts-agent-linux-x64-4.259.0.tar.gz
+				
+				https://dev.azure.com/LoksaiETA-Orgn/
+				
+				
+				ls 
+				
+				./config.sh 
+				
+Enter (Y/N) Accept the Team Explorer Everywhere license agreement now? (press enter for N) > Y
+
+>> Connect:
+
+Enter server URL > https://dev.azure.com/LoksaiETA-Orgn/
+Enter authentication type (press enter for PAT) >
+Enter personal access token > ************************************************************************************
+Connecting to server ...
+
+>> Register Agent:
+
+Enter agent pool (press enter for default) > javabuildap1
+Enter agent name (press enter for Javawebappbuildserver1) >
+Scanning for tool capabilities.
+Connecting to the server.
+Successfully added the agent
+Testing agent connection.
+Enter work folder (press enter for _work) >
+2025-07-31 02:43:45Z: Settings Saved.
+
+
+devopsadmin@Javawebappbuildserver1:~/myagent$ ls
+_diag  config.sh  externals     reauth.sh      run.sh  vsts-agent-linux-x64-4.259.0.tar.gz
+bin    env.sh     license.html  run-docker.sh  svc.sh
+
+
+
+devopsadmin@Javawebappbuildserver1:~/myagent$ ./run.sh
+Scanning for tool capabilities.
+Connecting to the server.
+2025-07-31 02:47:01Z: Listening for Jobs
+				
+# Maven
+# Build your Java project and run tests with Apache Maven.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/java
+
+trigger:
+- master
+
+pool:
+  name : 'javabuildap1'
+
+steps:
+- task: Maven@4
+  inputs:
+    mavenPomFile: 'pom.xml'
+    mavenOptions: '-Xmx3072m'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: default
+    jdkArchitectureOption: 'x64'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    goals: 'package'
+
+- task: CopyFiles@2
+  inputs:
+    Contents: '**/*.war'
+    TargetFolder: '$(build.artifactstagingdirectory)'
+	
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'mywebapp'
+    publishLocation: 'Container'
+
+
+
+
+# .Net Project!
+
+
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+steps:
+- task: NuGetToolInstaller@1
+
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(solution)'
+
+- task: VSBuild@1
+  inputs:
+    solution: '$(solution)'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(build.artifactStagingDirectory)"'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+- task: VSTest@2
+  inputs:
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'mywebapp'
+    publishLocation: 'Container'
+
+
+
