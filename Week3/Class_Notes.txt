@@ -1037,3 +1037,136 @@ steps:
 
 
 
+#######################
+Day 15: 1st August 2025
+#######################	
+	
+	- Create Azure Container Registries 
+		- AzCR , DockerHub(Login to Dockerhub & Create PAT)
+						docker login -u losdieta
+						dasdfasdfE
+	
+	- Create Service Connection to Container Registry
+
+	- AzPipeline to Containerize the Application Artifacts
+
+	- Publish to Container Registries 
+	
+	- Work with Kubernetes to deploy the Containerized workload using Az CI/CD Pipelines.
+	
+	
+	Az Release Pipeline!
+	
+	- To Deploy the Changes to the Target Environment 
+	
+		Target Environment :
+		
+			- Prod Deployment Servers(VM)	# Non-Containerized Workload.
+			
+			- Prod Deployment Servers(VM)	# Containerized Workload.
+				- pull and run the application image in this VM
+				- 1 instance of Container 
+			
+			- Kubernetes Cluster 			# Containerized Workload.
+			
+				- AKS 
+				
+				- On-prem Kubernetes Cluster 
+					AWS Cloud 
+					GCP 
+					Az VM					
+					
+				- Kubernetes Architecture!
+				- Kubernetes Components 
+				- Kubernetes Terminologies/Concepts
+				
+				- Create Kubernetes Cluster using Open-Source - On-Prem	
+				
+				- Create Kubernetes Cluster using AKS / EKS / GKE
+				
+				- Kubernetes Developers 		
+				- Kubernetes Administrators 
+				- Kubernetes Security Admins
+			
+	
+	-> Container Orchestration:
+	
+			- Docker Swarm 
+				- Create replicas of containers and ensure high availability of containers
+				- This cannot suppport Auto-Scaling & Load Balancing!
+				- So, this is not recommended in Prod Environments.
+				
+			- Kubernetes 
+				- Create replicas of containers/Pods and ensure high availability of containers
+				- This suppport Auto-Scaling & Load Balancing!
+					
+				- Open-Source Kubernetes 
+
+				- Managed Kubernetes Serices 
+				
+					- AKS/EKS/GKE
+					
+	-> Kubernetes Architecture:
+	
+		- Create Kubernetes Cluster using Open-Source - On-Prem	:
+			- Create VMs in Az Cloud / AWS Cloud to Install and Configure Open-Source Kubernetes
+			- kubeadm utility used to create Production grade Kubernetes Clusters 
+			
+			- Create Az Service Connection to attach the Kubernetes Cluster to Az Pipeline Project
+			
+			- Create CI/CD Pipeline!
+			
+		- Create Kubernetes Cluster using AKS :
+			
+	-> Azure Artifacts / Test Coverage using Azure Test Plan
+
+		
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+
+- task: Maven@4
+  inputs:
+    azureSubscription: 'Azure subscription 1(bf1aeccd-85bd-4d70-a583-65f6c8f7a4cb)'
+    mavenPomFile: 'pom.xml'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    javaHomeOption: 'JDKVersion'
+    mavenVersionOption: 'Default'
+    mavenAuthenticateFeed: false
+    effectivePomSkip: false
+    sonarQubeRunAnalysis: false
+
+- task: CopyFiles@2
+  inputs:
+    Contents: '**/*.war'
+    TargetFolder: '$(build.artifactstagingdirectory)'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'mywebapp'
+    publishLocation: 'Container'
+
+- task: Docker@2
+  inputs:
+    containerRegistry: 'skdhcr-sc1'
+    command: 'login'
+
+- task: Docker@2
+  inputs:
+    containerRegistry: 'skdhcr-sc1'
+    repository: 'loksaieta/skazwebapp'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
+    tags: 'latest'
+		
