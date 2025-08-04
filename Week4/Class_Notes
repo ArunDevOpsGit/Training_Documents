@@ -1,0 +1,174 @@
+		
+#######################
+Day 16: 4th August 2025
+#######################					
+						
+	- Kubernetes Architecture!
+	- Kubernetes Components 
+	- Kubernetes Terminologies/Concepts		
+
+	- Setup Kubernetes-Cluster using kubeadm 
+	
+	- Create Az-CICD Pipeline using Kubernetes
+	
+	
+		Environments :
+		
+		
+			Dev 
+				
+			Build 
+			
+			Target Environments :
+			
+				QA 
+				
+				UAT 
+				
+				Prod 
+				
+					- Prod_Servers : 1,2,3,4,5
+					
+		Kubernetes:
+		
+			Master/Worker_Node 
+			
+			Kubernetes_Master(VM)			# Controller  
+			
+				Kubernetes_WorkNode1(VM)
+				Kubernetes_WorkNode2(VM)
+				Kubernetes_WorkNode3(VM)
+				
+		Kubernetes Architecture Components :::
+		
+			- Kubernetes Cluster			# Collection of WorkNodes 
+			
+			- API Server 
+			
+			- ETCD 
+			
+			- Scheduler 
+			
+			- Controller Manager 
+			
+			- Kubelet 
+			
+			- Kube-proxy
+			
+			- CRI - Container Runtime Interface - Container-D
+			
+		
+			Kubernetes_Master(VM)											#Controller  
+				Cluster :													Region1
+					Kubernetes_WorkNode1(VM)
+					Kubernetes_WorkNode2(VM)
+					Kubernetes_WorkNode3(VM)	
+				Cluster :													Region2
+					Kubernetes_WorkNode1(VM)
+					Kubernetes_WorkNode2(VM)
+					Kubernetes_WorkNode3(VM)	
+
+
+
+			Kubernetes_Master													On-Prem
+			
+				Kubernetes_Master(VM)			# Controller  					AWS
+					Cluster :													Region1
+						Kubernetes_WorkNode1(VM)
+						Kubernetes_WorkNode2(VM)
+						Kubernetes_WorkNode3(VM)	
+					Cluster :													Region2
+						Kubernetes_WorkNode1(VM)
+						Kubernetes_WorkNode2(VM)
+						Kubernetes_WorkNode3(VM)	
+				
+				Kubernetes_Master(VM)			# Controller  					Azure
+					Cluster :													Region1
+						Kubernetes_WorkNode1(VM)
+						Kubernetes_WorkNode2(VM)
+						Kubernetes_WorkNode3(VM)	
+					Cluster :													Region2
+						Kubernetes_WorkNode1(VM)
+						Kubernetes_WorkNode2(VM)
+						Kubernetes_WorkNode3(VM)
+	
+			
+	- Kubernetes Terminologies/Concepts :::
+
+		- kubectl				# Commmand line utility 
+								# Used to interact with Kubernetes_Master
+							
+		- Pod 					# Is a smallest/Atomic unit of schedule 
+								# Pod will be assigned with an IP Address for Networking 
+								# A pod can have one or two container definitions
+																
+		- kubeadm 				# Command line utility to config Kubernetes-Cluster
+		
+		- Networking 
+		
+		- volumes 
+		
+		- Services 
+		
+			- Cluster-IP Services 
+			
+			- NodePort Services
+
+			- Load Balancer!
+			
+			
+		- Controller Objects :				# Is used to execute the pods in its desired state.
+		
+			- Deployment Controller Objects 
+				- Deployment Strategies
+				
+				Continuous Deployment we can achieve Zero-Downtime.
+				
+				- Rolling Update Strategies :
+				
+				- Canary Deployment Strategies 
+				
+				- Blue-Green Strategies
+				
+					Passive Prod Environments			v1.0 		LIVE 
+					
+					Active Prod Environments			v2.0		LIVE 
+				
+				
+	Replica : 3 	mywebapp-Img:v1.0			===========>		mywebapp-Img:v2.0
+			
+		Pod1.1	mywebapp-Img:v1.0							mywebapp-Img:v1.1
+		
+		Pod1.2	mywebapp-Img:v1.0							mywebapp-Img:v1.1
+		
+		Pod1.3	mywebapp-Img:v1.0							mywebapp-Img:v1.1
+				
+		
+	Application Architecture :
+	
+	3 - Tier Application Architecture :		Micro-Service 
+	
+		- Front-End Layer 			# User Interaction	# Pod1.1,1.2,1.3
+		
+		- Application Layer 		# Business Logics 	# Pod2.1,2.2,2.3 
+		
+		- Backend Layer 			# Database 			# Pod3.1,3.2,3.3
+			
+			
+Installation & Configuration of Kubernetes using Kubeadm Utility :::
+		https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
+			
+			Kubernetes_Master(VM)											
+				Cluster :													
+					Kubernetes_WorkNode1(VM)
+					Kubernetes_WorkNode2(VM)
+
+AKS :
+			
+			
+	About Kubernetes Pods 
+	
+	- Manifest files :
+	
+		- *.yaml 
+		- *.json 
