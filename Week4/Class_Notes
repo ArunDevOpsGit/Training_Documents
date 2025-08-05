@@ -172,3 +172,223 @@ AKS :
 	
 		- *.yaml 
 		- *.json 
+#######################
+Day 17: 5th August 2025
+#######################				
+		
+	Work kubectl Commands 
+	
+		- Create Manifest file to deploy the service to kubernetes cluster 
+		
+	Set-up release pipelines!
+	
+		- Classic Pipelines 
+		
+	
+	IAC Tools :
+	
+		- Azure Resource Manager/Terraform to Create Az Resources 
+		
+	
+kubectl commands :
+
+		kubectl get nodes
+		
+		kubectl get pods		# To get the list of pods running in default namespace 
+		
+		Namespace :				# Logical Partition of Kubernetes-Cluster	
+								# Namespaces can be created based on the Environment/Team/Resource Types
+								# Can be used to perform blue-green deployments 
+		
+		
+		Target Environments :
+
+
+			Kubernetes_Master(VM)		Non-Prod 		==> Namespaces : dev/qa/uat								
+				Cluster :													
+					Kubernetes_WorkNode1(VM)
+					Kubernetes_WorkNode2(VM)
+					
+					
+					
+			Kubernetes_Master(VM)		Prod_v1.0	LIVE 											
+				Cluster :													
+					Kubernetes_WorkNode1(VM)
+					Kubernetes_WorkNode2(VM) 
+		
+
+			
+			namespace: webappv1
+			
+			namespace: webappv2
+			
+			
+			File system:
+			
+				c: 
+					OS_Folder 		--> OS Files 							kube-system 
+					
+					Folder1 		-- Logical entity - Source_code 		dev 
+						- files 						
+					Folder2 		-- Logical entity - docs 				qa 
+						- files 	
+
+		Namespaces :
+		
+			- kubectl create namespace dev 
+			
+		
+		How to create Pods!
+		
+			- Create Manifest files 
+			
+				*.yaml
+				
+				
+		Deployment Controller Objects ::
+
+	Controller Object :::
+		ReplicaSet 
+		Deployment 
+
+
+	ReplicaSet :::
+	
+		--> Replicaset is used to execute the specific no. of pods in the cluster.
+		--> Replicaset uses the Set Based Operator
+		--> Used to replicate the pods and able to scale up/down
+		--> The Replicasets will be automatically created, while creating Deployment Controller Object.
+	
+	Deployment Controller Object :::
+	
+		--> It is used to deploy the pods and ensure high availability of pods by creating pod replicas 
+		--> 1. Create Muliple instance/replicas/copies of pods 
+			2. Used to Scale-Up / Scale-Down the Pods 
+			3. Used to Upgrade the application pods 
+			4. Used to Down-grade/roll-back the application pods
+		--> The upgrade/down-grade of application pods can be done without any downtime. 
+		--> To achieve zero-downtime during upgrade/down-grade, By Default, it used Rolling-Update Deployment Strategy.
+		
+		
+		webappV1 	==> 	pod1,2,3 
+		
+		
+		-> Deployment 
+		
+		-> ReplicaSet
+		
+		-> Pod instances 
+
+Manifest file to Create Deployment Controller :
+	
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loksai-eta-deploy
+  labels:
+    app: loksai-eta-deploy-lbl
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: loksai-eta-app
+  template:
+    metadata:
+      labels:
+        app: loksai-eta-app
+    spec:
+      containers:
+      - name: loksai-eta-container
+        image: loksaieta/skazwebapp
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: loksai-eta-np-service
+  labels:
+    app: loksai-eta-app
+spec:
+  selector:
+    app: loksai-eta-deploy-lbl
+
+  type: NodePort
+  ports:
+  - nodePort: 31028
+    port: 8080
+    targetPort: 8080	
+
+
+		# NodePort Rage : 30000 - 32767
+		# NodePort Service is used to expose the pods to internet!
+		
+		
+		<external_ip_addr>:<node_port>
+		
+		Nodeport is mapped with pod 
+		
+		
+	Kubernetes Services :
+	
+		- NodePort 
+		
+		- LoadBalancer
+		
+			- Create LB at application level 
+			- Route the request to service.
+			
+			
+		- Ingress Controller Rules :
+		
+			- Simple Routing 			# Web Page - static Web-Page 	www.loksai-ai-blog.com
+			
+			- Host Based Routing 
+			
+			- Path Based Routing 
+			
+		
+		www.google.com 				Load Balancer @ Application Level 
+		
+			Maps 	:	www.maps.google.com 										Host Based Routing 
+			
+			Drive 	:	www.drive.google.com
+			
+			Email 	: 	www.mail.google.com
+		
+			
+		www.mail.google.com
+		
+			inbox 		: www.gmail.com/inbox 										Path Based Routing 
+			
+			sent 
+			
+			trash 
+			
+		
+	kubectl describe deploy loksai-eta-deploy	
+	
+	kubectl scale deployment loksai-eta-deploy --replicas=10
+	
+	Horizontal Scaling 			: Scale up/Down - no. of pods --> 50 			==> HPA 
+	
+	Vertical Scaling 			: Scale up/Down - no. of Nodes 					==> VPA 
+	
+	
+	kubectl top pod 			# Metrics Server ! Metrics APIs 
+	
+	kubectl top pod -n qa 		# At Namespace level 
+	
+		- Service Connection 
+		
+Next :
+
+	Integrate Target Envionments to Az Pipelines :
+	
+		- Web Apps Server 				# Deploy the Application Artifacts - Non-Containerized workloads 
+		
+		- Kubernetes-Cluster			# Deploy the Application Images -	Containerized workloads 
+			- AKS 
+			- On-prem 
+		
+	IAC 
