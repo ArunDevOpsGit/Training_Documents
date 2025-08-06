@@ -392,3 +392,141 @@ Next :
 			- On-prem 
 		
 	IAC 
+		
+#######################
+Day 18: 5th August 2025
+#######################						
+			
+	Integrate Target Envionments to Az Release Pipelines :
+	
+		- Web Apps Server 				# Deploy the Application Artifacts - Non-Containerized workloads 
+		
+		
+		Configuration of WebApp Server!
+		
+			- Target Envionments for any Application Deployments :
+			
+				- Azure Managed Deployments Servers 
+				
+					
+		
+	IAC Tools :
+	
+		ARM - Terraform Scripts :
+		
+	Monitoring :
+	
+		- Cloud Resource Monitor using Azure Monitor 
+		
+			- Threshold limit :
+			
+				70% of CPU Utilization 
+					- Alert Managers to setup the automated Notifications 
+					- Scale the resources 
+		
+		- Kubernetes Monitoring!
+		
+			Auto Scaling 
+			
+				- CPU / Memory 
+				
+				- Monitor the Pods 
+				
+				- helm charts to setup the monitoring tools like prometheus/grafana
+				
+					- Create Kubernetes Dashboards to Monitor the Pods and Deployment Objects 
+			
+			
+			
+			Non-Prod 
+			
+				unit testing 
+				
+				unit test coverage 
+				
+				==> QA 
+				
+					QA testing 
+					
+					QA coverage 
+					
+					==> Prod 
+						
+							ServiceNow 
+							
+								Change Order 
+								
+									Approve CO 
+									
+									Release Gates :
+									
+										-> APIs -- pre-check all the quality gates 
+										
+										-> GreenLight-API --> GLAPI
+			
+			
+	Azure Monitor :
+
+		- Az Resources :
+		
+	Azure Monitor/Dynatrace/Splunk/Nagios/Prometheus/
+	
+	Grafana :
+	
+		- Visualization Tool
+		- Used to prepare dashboards 
+		
+	Architecture of Monitoring Servers :
+	
+			- Azure Monitor/Dynatrace/Splunk/Nagios/Prometheus/
+		
+		
+	IAC Tools ::
+			
+			Azure Resource Manager 
+			
+			Terraform Script to invoke the ARM to create the resources. 
+			
+			
+			IAC Tools :
+			
+				Provision/Create Resources 	- AzRM / Terraform 
+				
+				Configuration Management 	- Ansible/Chef/Puppet
+				
+				
+		az cli ==> create the resources 
+		
+		
+		Scripting Languages! 
+		
+		*.sh
+		
+			-- create resource group
+			-  create vm 
+			-  install the required tools 
+
+
+		-> Identify the Infra-Structure 
+		-> Write the IAC Terraform Script 
+		-> Perform Terraform Init 			# Initialize Terraform Registry for Azure - Download the Azure Provider
+		-> Perform Terraform Plan 			# Preview the Terraform Script 
+		-> Perform Terraform Apply 			# Create/Update the Resources in Target
+		
+		
+			Terraform Registry 
+			
+				https://registry.terraform.io/browse/providers
+		
+		
+		- Visual Studio Code to create the Terraform Scripts 
+		
+			- Azure Subscription 			bf1aeccd-85bd-4d70-a583-65f6c8f7a4cb
+			
+			- Azure Tenant ID 				513ba6a2-5057-4c96-8ef0-fea57eaf9e80
+			
+			Create App Registration : 
+			
+			- Azure Client ID 				90eca237-f144-48fb-8c70-a3286580b196
+			- Azure Client Secret 			165c3193-0a79-4f85-8d82-e8406d37cd35
+			
