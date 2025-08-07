@@ -394,7 +394,7 @@ Next :
 	IAC 
 		
 #######################
-Day 18: 5th August 2025
+Day 18: 6th August 2025
 #######################						
 			
 	Integrate Target Envionments to Az Release Pipelines :
@@ -529,4 +529,194 @@ Day 18: 5th August 2025
 			
 			- Azure Client ID 				90eca237-f144-48fb-8c70-a3286580b196
 			- Azure Client Secret 			165c3193-0a79-4f85-8d82-e8406d37cd35
+			
+
+
+			
+		
+#######################
+Day 19: 7th August 2025
+#######################	
+
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+
+- task: Maven@4
+  inputs:
+    azureSubscription: 'Azure subscription 1(bf1aeccd-85bd-4d70-a583-65f6c8f7a4cb)'
+    mavenPomFile: 'pom.xml'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    javaHomeOption: 'JDKVersion'
+    mavenVersionOption: 'Default'
+    mavenAuthenticateFeed: false
+    effectivePomSkip: false
+    sonarQubeRunAnalysis: false
+
+- task: CopyFiles@2
+  inputs:
+    Contents: '**/*.war'
+    TargetFolder: '$(build.artifactstagingdirectory)'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'mywebapp'
+    publishLocation: 'Container'
+
+- task: Docker@2
+  inputs:
+    containerRegistry: 'skdhcr-sc1'
+    command: 'login'
+
+- task: Docker@2
+  inputs:
+    containerRegistry: 'skdhcr-sc1'
+    repository: 'loksaieta/skazwebapp'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
+    tags: 'latest'
+
+- task: CopyFilesOverSSH@0
+  inputs:
+    sshEndpoint: 'onprem-k8s-sc1'
+    sourceFolder: '$(System.DefaultWorkingDirectory)'
+    contents: '**/kdeploy.yaml'
+    targetFolder: '/home/devopsadmin'
+    readyTimeout: '20000'
+
+- task: SSH@0
+  inputs:
+    sshEndpoint: 'onprem-k8s-sc1'
+    runOptions: 'commands'
+    commands: 'kubectl apply -f kdeploy.yaml'
+    readyTimeout: '20000'		
+			
+			
+			
+kubectl apply -f kdeploy.yaml 
+
+Create Kubernetes Service Account 
+
+RBAC :
+
+Namespace Level Access :
+
+Role 
+Role Binding 			
+
+Cluster Level Access :
+
+Cluster-Role 
+Cluster Role Binding 
+			
+			
+			
+Azure Test :
+
+	=> 
+
+Azure Artifacts :
+			
+			
+SonarQube Server :
+
+	- Self Managed SonarQube Server 
+		- Create Project -> Project Key 
+		
+		
+	- SonarQube Cloud Server 					# -> Recently there are vulnerablities
+												# -> Security patch should be updated.
+
+		- Check for the Coding standards :
+			
+			- Quality gates!
+			
+		- Perform Static Analysis :
+		
+			- Test Coverage 
+			
+			- Code Coverage 
+			
+			
+Azure Artifacts :
+
+Jfrog Artifacts :
+
+		v1.0  ==> v1.0:SNAP_SHOT 
+			Build_Server :				Static 
+				- v1.0:SNAP_SHOT 
+		
+		aws codecommit/codepipeline/code artifacts 
+			
+			
+Terraform :::
+
+	- Is a IAC Tool - Used to Provision the Infra-Structure
+	
+	- Terraform uses HCL - Hashi-Corp Declarative Language (JSON file format)
+	
+	- Terraform Working Model 
+	
+		--> Identify the Scope of the Infra-Structure (AWS/Azure)
+		
+		--> Write the Terraform Script 
+		
+		--> Perform Terraform Init 	- Initialize the Terraform Providers 	
+									- To Download Terraform Provider to Terraform Project
+		
+		--> Perform Terraform Plan - Preview the Terraform Script 
+		
+		--> Perform Terraform Apply - To Implement the actual Changes to the target infra-structure
+		
+		
+	Working with Terraform :::
+	
+		- Install Terraform 		--> Local Windows Machine / Linux Machine 
+		
+				https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli
+				
+				https://developer.hashicorp.com/terraform/install
+				
+
+				Using Manual Approach - Install Terraform on local windows machine 
+				
+					- Download Windows AMD64 Version Terraform -- zipfile 
+						- Right Click and Extract all 
+							- Get the Extracted Terraform Folder 
+								- Get the terraform - binary file 
+								
+					- Setup Environment Variable for terraform binary file 
+						- from windows start menu, search for enviroment variable 
+							- click of edit enviroment variable setting 
+								- find system properties dialog 
+									- select enviroment variables button
+										- On Environment Variables Dialog 
+											- goto to System Variable 
+												- Select path variable and edit 
+													- Click on New 
+														- add C:\Softwares\terraform_1.7.2_windows_amd64
+															- apply the changes and close the settings
+				
+		- Install Visual Studio Code 	- IDE used to create Terraform Projects 
+			
+				https://code.visualstudio.com/download
+				
+				
+		
+		- Open Visual Studio Code - Create Terraform Project 	
+
+			- Install HashiCorp Terraform Extension for VSCode 
+			
+			
 			
