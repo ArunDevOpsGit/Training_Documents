@@ -719,4 +719,174 @@ Terraform :::
 			- Install HashiCorp Terraform Extension for VSCode 
 			
 			
+
+#######################
+Day 20: 8th August 2025
+#######################				
+
+	1. Practise - the core concepts 
+	2. FAQs - based on exp. AzDevOps & JD.
+	3. Scenario based Q&A & Use case!
+	
+	
+	Terraform :::
+	
+		- Terraform Scripts are written using HCL Language based on json file type. 
+		- create a script file : *.tf 
+	
+	
+		1. Create App Registration
+		2. Get Tenant_ID,Client_ID,Subscription_ID
+		3. Create Client Secret
+		4. Create Authorization for App Registration
+			- Goto Subscription --> IAM --> Create Role - Contributor 
+	
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "=3.0.0"
+    }
+  }
+}
+
+provider "azurerm" {
+    subscription_id = "bf1f7a4cb"
+    tenant_id = "580"
+    client_id = "e15a2hjbjhbjb935c"
+    client_secret = "_VX8jhjCZ"
+    features {}
+}
+
+variable "prefix" {
+  default = "skmex"
+}
+
+resource "azurerm_resource_group" "skexample" {
+  name     = "${var.prefix}-resources"
+  location = "Central India"
+}
+	
+	
+	
+Scope of Terraform :
+	
+	=> Add/Create resource 					+
+	
+	=> Delete/Destroy resources 			-
+	
+	=> Alter/Change resources 				~
+	
+	
+	Terraform State file :
+	
+		- Used to maintain the state of the resource.
+	
+	
+	
+
+Azure Kubernetes Services ::::
+
+# Deploy to Azure Kubernetes Service
+# Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Service
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- master
+
+resources:
+- repo: self
+
+variables:
+
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: '099a471b-ec97-4b87-9687-2c64284f5d8b'
+  imageRepository: 'javawebappproject'
+  containerRegistry: 'skjavaappimg.azurecr.io'
+  dockerfilePath: '**/Dockerfile'
+  tag: '$(Build.BuildId)'
+  imagePullSecret: 'skjavaappimgaae1-auth'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
+
+stages:
+- stage: Build
+  displayName: Build stage
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+
+    - task: Maven@4
+      inputs:
+        azureSubscription: 'Azure subscription 1(bf1aeccd-85bd-4d70-a583-65f6c8f7a4cb)'
+        mavenPomFile: 'pom.xml'
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        javaHomeOption: 'JDKVersion'
+        mavenVersionOption: 'Default'
+        mavenAuthenticateFeed: false
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: false
+
+    - task: CopyFiles@2
+      inputs:
+        Contents: '**/*.war'
+        TargetFolder: '$(build.artifactstagingdirectory)'
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'mywebapp'
+        publishLocation: 'Container'
+
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Pipeline.Workspace)'
+        artifact: 'k8sconfigfiles'
+        publishLocation: 'pipeline'
+
+    - task: KubernetesManifest@1
+      inputs:
+        action: 'deploy'
+        connectionType: 'kubernetesServiceConnection'
+        kubernetesServiceConnection: 'skaks1-default'
+        namespace: 'default'
+        manifests: '$(Build.SourcesDirectory)/kdeploy.yaml'		
+		
+		
+	Open VSCode 
+	
+		- Clone azRepo 
+		- enable kubectl using az cli 
+		
+		
+		Docker login --> login_id & pat 
+		
+		ACR : push the 
+	
+	
+			
+https://learn.microsoft.com/en-us/azure/devops/?view=azure-devops		
+			
+			
+			
+			
+			
+			
+			
 			
